@@ -1,0 +1,30 @@
+{% extends 'main.html' %} {% block extraheader %} {% load filtering_tags_book %}
+
+{% endblock %} {% block content %}
+   <main class="center-align container" >
+<h1>Notifications</h1>
+
+
+<div class="row l12">
+    {% for a in notifications %}
+
+    <div class="col s12 m6 l4">
+    
+       
+<div class="card-panel blue-grey darken-4 ">
+          <span class="white-text"> A book titled "{{a.name}}" from {{a.author}} was added in category {{a.category}}! </span>
+        </div>
+
+
+
+
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+</main>
+{% endblock %}

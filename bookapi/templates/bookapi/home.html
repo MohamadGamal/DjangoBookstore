@@ -1,0 +1,32 @@
+{% extends 'main.html' %} {% block extraheader %} {% load filtering_tags_book %}
+<script>
+    $(document).ready(function () {
+        $('.parallax').parallax();
+    });
+
+</script>
+<style>
+    .parallax-container {
+        height: "200";
+    }
+</style>
+{% endblock %} {% block content %}
+
+
+
+<div class="parallax-container">
+    <div class="parallax"><img src="http://learn.surbitonhigh.com/english/wp-content/uploads/sites/8/2014/09/Woman-reading-a-book-014.jpg"></div>
+</div>
+<div class="section blue-grey darken-4">
+    <div class="row container ">
+        <h2 class="header center white-text">Welcome To The Bookstore !</h2>
+         <p class="white-text">You can join now to join thousands of enthusiasts in rating and viewing information about your favourite books and authors</p>
+  
+        
+    </div>
+</div>
+
+<div class="parallax-container">
+    <div class="parallax"><img src="http://i.huffpost.com/gen/1789484/images/o-CHILD-READING-facebook.jpg"></div>
+</div>
+{% endblock %}

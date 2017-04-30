@@ -1,0 +1,138 @@
+{% extends 'main.html' %} 
+ {% block extraheader %}
+ {% load filtering_tags_book %}
+<script>
+
+ $(function() {
+      $('select').material_select();
+   });
+
+function hottopic(event,id){
+    console.log("FALSE")
+$(document).ready(function () {
+    $.ajax({ 
+        type: 'GET', 
+        url: 'http://localhost:8000/api/service/like/'+id, 
+       // data: { get_param: 'value' }, 
+        success: function (data) { 
+            console.log(data)
+            console.log(event)
+            event.classList.toggle('red')
+            event.classList.toggle('blue')
+        }
+    });
+});
+}
+function wish(event,id){
+    console.log("FALSE")
+$(document).ready(function () {
+    $.ajax({ 
+        type: 'GET', 
+        url: 'http://localhost:8000/api/service/wish/'+id, 
+       // data: { get_param: 'value' }, 
+        success: function (data) { 
+            console.log(data)
+            console.log(event)
+              event.classList.toggle('pink')
+            event.classList.toggle('yellow')
+        
+        }
+    });
+});
+}
+function read(event,id){
+    console.log("FALSE")
+$(document).ready(function () {
+    $.ajax({ 
+        type: 'GET', 
+        url: 'http://localhost:8000/api/service/read/'+id, 
+       // data: { get_param: 'value' }, 
+        success: function (data) { 
+            console.log(data)
+            console.log(event)
+                event.classList.toggle('purple')
+            event.classList.toggle('green')
+          
+        }
+    });
+});
+}
+
+
+
+function rate(event,id){
+    console.log("FALSE")
+    console.log(event.value)
+   
+$(document).ready(function () {
+    $.ajax({ 
+        type: 'POST', 
+        url: 'http://localhost:8000/api/service/rate/'+id, 
+        data: { rate: event.value }, 
+        success: function (data) { 
+            console.log(data)
+             $(event).parent().remove()
+          
+        }
+    });
+});
+}
+
+
+
+</script>
+{% endblock %}
+
+{% block content %}
+    <main class="center-align container" >
+
+
+
+
+<h1>Books</h1>
+
+
+<div class="row l12">
+ {% for a in books %}
+
+    <div class="col s12 m6 l4">
+        <div class="card">
+            <div class="card-image">
+                <img src=/pics/{{ a.image }}>
+                <span class="card-title bold">{{ a.name }}</span>
+                
+                <a onclick="hottopic(this,{{a.id}})"class="btn-floating halfway-fab waves-effect waves-light {% if a|haselem:id %}blue{% else %} red{% endif %}" ><i class="material-icons">thumb_up</i></a>
+            </div>
+            <div class="card-content">
+                <p class='left'>{{a.description}}</p>
+                 <div class="chip  ">
+        
+                   {{a.category}}
+                    
+                </div>
+            </div>
+            <div class="card-action">
+              <a onclick="read(this,{{a.id}})" class="btn-floating  waves-effect left waves-light {% if a|isread:id %}purple{% else %} green{% endif %} " ><i class="material-icons">done</i>This is a link</a>
+              <a onclick="wish(this,{{a.id}})" class="btn-floating  waves-effect waves-light {% if a|iswished:id %}pink{% else %} yellow{% endif %}" ><i class="material-icons">today</i>This is a link</a>
+              <a class="btn-floating  waves-effect waves-light black right" >{{ a|aggregaterate }}</a>
+              {% if a|israted:id == False %}
+<select onchange="rate(this,{{a.id}})" >
+<option value="disabled" disabled selected>Rate Now!</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+</select>
+{% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+
+</div>
+
+
+</main>
+ {% endblock %}

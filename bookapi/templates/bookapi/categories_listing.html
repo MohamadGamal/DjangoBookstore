@@ -1,0 +1,52 @@
+{% extends 'main.html' %} {% block extraheader %} {% load filtering_tags_book %}
+<script>
+
+
+    function favourites(event, id) {
+        console.log("FALSE")
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8000/api/service/favourites/' + id,
+                // data: { get_param: 'value' }, 
+                success: function (data) {
+                    console.log(data)
+                    console.log(event)
+                    event.classList.toggle('red')
+                    event.classList.toggle('blue')
+                }
+            });
+        });
+    }
+
+
+</script>
+{% endblock %} {% block content %}
+   <main class="center-align container" >
+<h1>Categories</h1>
+
+
+<div class="row l12">
+    {% for a in categories %}
+
+    <div class="col s12 m6 l4">
+        <div class="card ">
+            <div class="card-image ">
+
+                <a onclick="favourites(this,{{a.id}})" class="btn-floating halfway-fab waves-effect waves-light {% if a|favourited:id %}blue{% else %} red{% endif %}"><i class="material-icons">trending_flat</i></a>
+            </div>
+            <div class="card-content">
+               <a href={% url 'categorybooks' a.id %} >  <p >{{a}}</p>
+               </a>
+            </div>
+
+        </div>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+</main>
+{% endblock %}

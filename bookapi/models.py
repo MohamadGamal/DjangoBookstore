@@ -32,6 +32,7 @@ class User(models.Model):
     # password=models.CharField(max_length=200)
     user = models.OneToOneField(defmodUser, on_delete=models.CASCADE)
     birthdate = models.DateField(null=True)
+    notifs = models.DateTimeField(auto_now_add=True)
     bio = models.TextField(max_length=500, blank=True)
     likes = models.ManyToManyField(Book,related_name='users_likes')
     read = models.ManyToManyField(Book,related_name='users_read')

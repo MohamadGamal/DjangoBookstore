@@ -9,6 +9,16 @@ from .forms import SignUpForm,SignInForm,SignUpFormmuser
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
+def notifsget(request):
+    books=User.objects.none()
+    favs=request.user.user.favourites.all()
+    for seta in favs:
+        books= books | seta.book_set.filter(created_at__gt=request.user.user.notifs)
+    favs=request.user.user.follows.all()
+    for seta in favs:
+        books= books | seta.book_set.filter(created_at__gt=request.user.user.notifs)
+    books=books.distinct().order_by('-created_at')
+    return books
 def index(request):
     return  HttpResponse("Hello, world. You're at the polls index.")
 def test(request):
@@ -18,7 +28,8 @@ def home(request):
     print(request.user)
     return  HttpResponse("Hello, world. You're at the home index."+str(request.user.is_authenticated())+str(request.user.id))
 def realhome(request):
-     return render(request,'bookapi/home.html')
+    
+     return render(request,'bookapi/home.html',{'notlen':len(notifsget(request))})
 def signin(request):
     if request.method == 'POST':
          
@@ -104,6 +115,7 @@ def favlist(request):
     return render(request,'bookapi/books_listing.html',context={"books":books[:10],"id":request.user.id})
 
 
+    
 def servicebooks(request):
     authme=[]
     auth = Book.objects.all()

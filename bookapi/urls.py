@@ -12,7 +12,7 @@ urlpatterns = [
       url(r'^test', views.test, name='test'),
         url(r'^books', views.books, name='books'),
          url(r'^authors', views.authors, name='authors'),
-         
+           url(r'^notifications', views.notlist, name='notifications'),
          url(r'^categories', views.categories, name='categories'),
  url(r'^favourites', views.favlist, name='favourites'),
          url(r'^author/(?P<author_id>[0-9]+)/books', views.bauthors, name='authourbooks'),

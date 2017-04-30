@@ -8,6 +8,7 @@ from .models import User,Book,Rate,Author,Category
 from .forms import SignUpForm,SignInForm,SignUpFormmuser
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 # Create your views here.
 def notifsget(request):
     books=User.objects.none()
@@ -29,7 +30,7 @@ def home(request):
     return  HttpResponse("Hello, world. You're at the home index."+str(request.user.is_authenticated())+str(request.user.id))
 def realhome(request):
     
-     return render(request,'bookapi/home.html',{'notlen':len(notifsget(request))})
+     return render(request,'bookapi/home.html',{'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 def signin(request):
     if request.method == 'POST':
          
@@ -90,17 +91,17 @@ class AddUserView(CreateView):
 def books(request):
     books = Book.objects.all().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
 def bauthors(request,author_id):
     author = get_object_or_404(Author,pk=author_id)
     books=author.book_set.all().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
 def bcategs(request,category_id):
     category = get_object_or_404(Category,pk=category_id)
     books=category.book_set.all().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
 
 def favlist(request):
     books=User.objects.none()
@@ -112,8 +113,15 @@ def favlist(request):
         books= books | seta.book_set.all()
     books=books.distinct().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books[:10],"id":request.user.id})
+    return render(request,'bookapi/books_listing.html',context={"books":books[:10],"id":request.user.id,'notlen':len(notifsget(request))})
 
+def notlist(request):
+    notifications=notifsget(request);
+    print(request.user.user.notifs)
+    request.user.user.notifs= timezone.now()
+    print(request.user.user.notifs)
+    request.user.user.save()
+    return render(request,'bookapi/notification_listing.html',context={"notifications":notifications,"id":request.user.id,'notlen':0})
 
     
 def servicebooks(request):
@@ -156,11 +164,11 @@ def ratesbook(request,book_id):
     return JsonResponse({"sucess":True},safe=False)
 def authors(request):
     authors = Author.objects.all()
-    return render(request,'bookapi/authors_listing.html',context={"authors":authors,"id":request.user.id})
+    return render(request,'bookapi/authors_listing.html',context={"authors":authors,"id":request.user.id,'notlen':len(notifsget(request))})
 
 def categories(request):
     categories = Category.objects.all()
-    return render(request,'bookapi/categories_listing.html',context={"categories":categories,"id":request.user.id})
+    return render(request,'bookapi/categories_listing.html',context={"categories":categories,"id":request.user.id,'notlen':len(notifsget(request))})
 
 
 def followauthor(request,author_id):

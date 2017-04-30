@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
-from django.contrib.auth import login, authenticate , logout
+from django.contrib.auth import login, authenticate , logout as lout
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView,DetailView,UpdateView, CreateView
 from django.forms.models import model_to_dict
@@ -13,24 +13,35 @@ from django.utils import timezone
 def notifsget(request):
     books=User.objects.none()
     favs=request.user.user.favourites.all()
+    print(favs)
     for seta in favs:
         books= books | seta.book_set.filter(created_at__gt=request.user.user.notifs)
     favs=request.user.user.follows.all()
+    print(favs)
     for seta in favs:
         books= books | seta.book_set.filter(created_at__gt=request.user.user.notifs)
-    books=books.distinct().order_by('-created_at')
+    if(len(books)>0):
+        books=books.distinct().order_by('-created_at')
+   
     return books
 def index(request):
     return  HttpResponse("Hello, world. You're at the polls index.")
 def test(request):
-    logout(request);
+    lout(request);
     return  HttpResponse(str(request.user.is_authenticated()))
+def logout(request):
+    lout(request);
+    return redirect('home')
 def home(request):
     print(request.user)
     return  HttpResponse("Hello, world. You're at the home index."+str(request.user.is_authenticated())+str(request.user.id))
 def realhome(request):
-    
-     return render(request,'bookapi/home.html',{'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
+    lezz=0
+    if(request.user.is_authenticated()):
+        lezz=len(notifsget(request));
+        print('lol')
+    print('lol')
+    return render(request,'bookapi/home.html',{'notlen':lezz,"islogged":request.user.is_authenticated()})
 def signin(request):
     if request.method == 'POST':
          
@@ -44,7 +55,9 @@ def signin(request):
             raw_password = form.data.get('password')
             
             user = authenticate(username=username, password=raw_password)
-            
+            if(not user):
+               
+                return render(request, 'bookapi/user_sign_in.html', {'form': form})
             print(user);
 
             login(request, user)
@@ -89,19 +102,23 @@ class AddUserView(CreateView):
     fields = ['Username','email','image','password','password']
     success_url = '/api/'
 def books(request):
-    books = Book.objects.all().order_by('-created_at')
+    books = Book.objects.all()
+    if(len(books)>0):
+        books=books.order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 def bauthors(request,author_id):
     author = get_object_or_404(Author,pk=author_id)
-    books=author.book_set.all().order_by('-created_at')
+    if(len(author.book_set.all())>0):
+        books=author.book_set.all().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 def bcategs(request,category_id):
     category = get_object_or_404(Category,pk=category_id)
-    books=category.book_set.all().order_by('-created_at')
+    if(len(category.book_set.all())>0):
+        books=category.book_set.all().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/books_listing.html',context={"books":books,"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 
 def favlist(request):
     books=User.objects.none()
@@ -111,9 +128,10 @@ def favlist(request):
     favs=request.user.user.follows.all()
     for seta in favs:
         books= books | seta.book_set.all()
-    books=books.distinct().order_by('-created_at')
+    if(len(books)>0):
+        books=books.distinct().order_by('-created_at')
     print(books)
-    return render(request,'bookapi/books_listing.html',context={"books":books[:10],"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/books_listing.html',context={"books":books[:10],"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 
 def notlist(request):
     notifications=notifsget(request);
@@ -121,7 +139,7 @@ def notlist(request):
     request.user.user.notifs= timezone.now()
     print(request.user.user.notifs)
     request.user.user.save()
-    return render(request,'bookapi/notification_listing.html',context={"notifications":notifications,"id":request.user.id,'notlen':0})
+    return render(request,'bookapi/notification_listing.html',context={"notifications":notifications,"id":request.user.id,'notlen':0,"islogged":request.user.is_authenticated()})
 
     
 def servicebooks(request):
@@ -164,11 +182,11 @@ def ratesbook(request,book_id):
     return JsonResponse({"sucess":True},safe=False)
 def authors(request):
     authors = Author.objects.all()
-    return render(request,'bookapi/authors_listing.html',context={"authors":authors,"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/authors_listing.html',context={"authors":authors,"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 
 def categories(request):
     categories = Category.objects.all()
-    return render(request,'bookapi/categories_listing.html',context={"categories":categories,"id":request.user.id,'notlen':len(notifsget(request))})
+    return render(request,'bookapi/categories_listing.html',context={"categories":categories,"id":request.user.id,'notlen':len(notifsget(request)),"islogged":request.user.is_authenticated()})
 
 
 def followauthor(request,author_id):

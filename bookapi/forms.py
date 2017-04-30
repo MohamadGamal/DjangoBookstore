@@ -11,7 +11,7 @@ class SignInForm(forms.ModelForm):
 class SignUpForm(forms.ModelForm):
     password=forms.CharField(widget=forms.PasswordInput())
     confirm_password=forms.CharField(widget=forms.PasswordInput())
-    birthdate = forms.DateField(widget=forms.SelectDateWidget())
+    
     class Meta:
         model = User
         fields = ['username','email', 'password','confirm_password']#'__all__'
@@ -28,8 +28,6 @@ class SignUpForm(forms.ModelForm):
 
     
 class SignUpFormmuser(forms.ModelForm):
-   
-    birthdate = forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
         model = nUser
-        fields = ['birthdate','bio','image']
+        fields = ['bio','image']

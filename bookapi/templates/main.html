@@ -48,15 +48,18 @@ body {
       <a href="#!" class="brand-logo center"><i class="material-icons">book</i>Bookstore</a>
       
       <ul class="right hide-on-med-and-down">
-       
-                <li><a href="/api/notifications"><span class="new badge center" data-badge-caption="new notifications">{{notlen}}</span></a></li>
+         {%if  islogged %}
+                <li><a href="/api/notifications"><span class="new red badge center" data-badge-caption="new notifications">{{notlen}}</span></a></li>
         <li><a href="/api/favourites"><i class="material-icons">view_module</i></a></li>
-        <li><a href="badges.html"><i class="material-icons">call_made</i></a></li>
-        
-        
+        <li><a href="/api/logout"><i class="material-icons">call_made</i></a></li>
+        {%else%}
+        <li><a href="/api/signin"><i class="material-icons">vpn_key</i></a></li>
+        <li><a href="/api/signup"><i class="material-icons">launch</i></a></li>
+         {% endif %}
       </ul>
-      {%if not islogged %}
+      
        <ul id="nav-mobile" class="left hide-on-med-and-down">
+         {%if  islogged %}
         <li><a href="/api/home">Home</a></li>
         <li><a href="/api/books">Books</a></li>
         <li><a href="/api/authors">Authors</a></li>
@@ -70,8 +73,9 @@ body {
         </div>
         </form>
         </li>
-      </ul>
+        
       {% endif %}
+      </ul>
     </div>
   </nav>
 

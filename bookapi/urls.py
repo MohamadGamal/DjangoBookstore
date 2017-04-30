@@ -17,7 +17,7 @@ urlpatterns = [
  url(r'^favourites', views.favlist, name='favourites'),
          url(r'^author/(?P<author_id>[0-9]+)/books', views.bauthors, name='authourbooks'),
          url(r'^category/(?P<category_id>[0-9]+)/books', views.bcategs, name='categorybooks'),
-
+  url(r'^logout', views.logout, name='logout'),
         url(r'^srvice', views.servicebooks, name='srvcbooks'),
         url(r'^service/like/(?P<book_id>[0-9]*)', views.likebook),
         url(r'^service/wish/(?P<book_id>[0-9]*)', views.wishesbook),
